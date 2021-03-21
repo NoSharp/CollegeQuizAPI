@@ -22,5 +22,4 @@ public class QuestionList {
         this.questionListUUID = questionListUUID;
         this.questions = questions;
     }
-
 }
