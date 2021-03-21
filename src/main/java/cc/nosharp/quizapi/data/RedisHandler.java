@@ -2,10 +2,16 @@ package cc.nosharp.quizapi.data;
 
 
 import cc.nosharp.quizapi.datamodels.QuestionList;
+import cc.nosharp.quizapi.datamodels.QuestionListProtos;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 public class RedisHandler {
 
@@ -50,12 +56,26 @@ public class RedisHandler {
 
 
     /**
-     *
+     * Get's a QuestionList from a Game UUID.
      * @param uuid The UUID of the quiz game.
      * @return The questions from the game.
      */
     public QuestionList getQuestionFromUUID(String uuid){
-        return null;
+
+        Jedis jedis = this.jedisPool.getResource();
+        String value = jedis.get(uuid);
+        jedis.close();
+        QuestionListProtos.QuestionListProto proto = null;
+        try {
+            proto = QuestionListProtos.QuestionListProto
+                    .parseFrom(ByteString.copyFrom(value, "UTF-8"));
+        } catch (InvalidProtocolBufferException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        assert proto != null;
+
+        return QuestionList.fromProtoBuffer(this.getGameKeyFromUUID(uuid), proto);
     }
 
 }

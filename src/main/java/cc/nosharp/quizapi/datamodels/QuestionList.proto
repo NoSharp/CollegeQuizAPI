@@ -1,10 +1,16 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package quizapi.questionlist;
 
 option java_package = "";
 option java_outer_classname = "QuestionListProtos";
 
-message QuestionList{
-  map<string, bool> Questions = 1;
+message Question{
+  required string Question = 1;
+  required string Answer = 2;
+
+}
+
+message QuestionListProto {
+  repeated Question Questions = 1;
 }
