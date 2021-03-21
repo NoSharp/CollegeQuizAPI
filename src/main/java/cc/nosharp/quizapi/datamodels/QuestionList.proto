@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package quizapi.questionlist;
+
+option java_package = "";
+option java_outer_classname = "QuestionListProtos";
+
+message QuestionList{
+  map<string, bool> Questions = 1;
+}
