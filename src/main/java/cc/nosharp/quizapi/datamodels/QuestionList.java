@@ -1,5 +1,6 @@
 package cc.nosharp.quizapi.datamodels;
 
+import cc.nosharp.quizapi.opentdb.TDBAPIResult;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -49,4 +50,16 @@ public class QuestionList {
         QuestionListProtos.QuestionListProto builtProto = protoBuilder.build();
         return builtProto.toByteString().toStringUtf8();
     }
+
+    public static QuestionList fromTDBAPI(String UUID,HashMap<Integer, TDBAPIResult> data){
+        HashMap<Integer, Question> questionList = new HashMap<>();
+
+        for (int i = 0; i < data.keySet().size(); i++) {
+            TDBAPIResult result = data.get(i);
+            questionList.put(i, new Question(result.getQuestion(), result.getCorrectAnswer()));
+        }
+
+        return new QuestionList(UUID, questionList);
+    }
+
 }
