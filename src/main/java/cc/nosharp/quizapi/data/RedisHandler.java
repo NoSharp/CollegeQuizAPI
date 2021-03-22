@@ -58,7 +58,7 @@ public class RedisHandler {
      * Generates a new UUID that currently doesn't exist in the redis db.
      * @return The free UUID
      */
-    public String GetNewUUID(){
+    public String getNewUUID(){
         String uuid = UUID.randomUUID().toString();
         while(!this.doesUUIDExist(uuid)){
             uuid = UUID.randomUUID().toString();
