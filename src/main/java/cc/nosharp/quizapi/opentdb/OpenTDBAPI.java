@@ -19,8 +19,8 @@ public class OpenTDBAPI {
 
 
     public static void GetNewQuestions(int amount,
-                                       TDAPICategory category,
-                                       TDAPIQuestionType type,
+                                       TDBAPICategory category,
+                                       TDBAPIQuestionType type,
                                        GetNewQuestionCallback callback){
         String endpoint = "";
         endpoint += "amount=" + amount;
@@ -58,8 +58,8 @@ public class OpenTDBAPI {
 
     }
 
-    private static HashMap<Integer, TDAPIResult> getResultsFromJSON(String json){
-        HashMap<Integer, TDAPIResult> results = new HashMap<>();
+    private static HashMap<Integer, TDBAPIResult> getResultsFromJSON(String json){
+        HashMap<Integer, TDBAPIResult> results = new HashMap<>();
         JSONObject object = new JSONObject(json);
         JSONArray resultsArray = object.getJSONArray("results");
         for (int i = 0; i < resultsArray.length(); i++) {
@@ -68,7 +68,7 @@ public class OpenTDBAPI {
             String type = jsonResult.getString("type");
             String question = jsonResult.getString("question");
             String correctAnswer = jsonResult.getString("correct_answer");
-            results.put(i, new TDAPIResult(category, type, question, correctAnswer));
+            results.put(i, new TDBAPIResult(category, type, question, correctAnswer));
         }
         return results;
     }
