@@ -32,7 +32,7 @@ public class QuestionListMediator {
                 callback-> {
                     QuestionList questionList = QuestionList.fromTDBAPI(uuid, callback);
                     redisHandler.insertNewQuestionList(questionList);
-                    newQuestionListCallback.callback(questionList);
+                    newQuestionListCallback.callback(QuestionOnlyList.fromQuestionList(questionList));
         });
     }
 }

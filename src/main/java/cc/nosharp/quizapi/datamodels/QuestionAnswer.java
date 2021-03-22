@@ -2,7 +2,7 @@ package cc.nosharp.quizapi.datamodels;
 
 import lombok.Getter;
 
-public class Question {
+public class QuestionAnswer {
 
     /**
      * The question asked.
@@ -16,7 +16,7 @@ public class Question {
     @Getter
     private final String answer;
 
-    public Question(String question, String answer) {
+    public QuestionAnswer(String question, String answer) {
         this.question = question;
         this.answer = answer;
     }
