@@ -12,11 +12,11 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.UUID;
 
 public class RedisHandler {
 
     private static RedisHandler INSTANCE;
-
 
     private JedisPool jedisPool;
 
@@ -52,6 +52,18 @@ public class RedisHandler {
      */
     public boolean doesUUIDExist(String uuid){
         return this.jedisPool.getResource().exists(this.getGameKeyFromUUID(uuid));
+    }
+
+    /**
+     * Generates a new UUID that currently doesn't exist in the redis db.
+     * @return The free UUID
+     */
+    public String GetNewUUID(){
+        String uuid = UUID.randomUUID().toString();
+        while(!this.doesUUIDExist(uuid)){
+            uuid = UUID.randomUUID().toString();
+        }
+        return uuid;
     }
 
 
