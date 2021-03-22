@@ -3,15 +3,11 @@ package cc.nosharp.quizapi.data;
 
 import cc.nosharp.quizapi.datamodels.QuestionList;
 import cc.nosharp.quizapi.datamodels.QuestionListProtos;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import com.google.protobuf.TextFormat;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.UUID;
 
 public class RedisHandler {
@@ -27,14 +23,14 @@ public class RedisHandler {
         config.setMinIdle(1); // Minimum amount of idle workers.
         config.setMaxWaitMillis(3000); // Waiting for a free connection.
 
-        this.jedisPool = new JedisPool(config, "127.0.0.1");
+        this.jedisPool = new JedisPool(config, "127.0.0.1", 6379);
     }
 
     /**
      * Get's an instance of the redis data source.
      * @return The instance of the RedisDataSource
      */
-    public static RedisHandler getDataSource(){
+    public static RedisHandler getRedisHandler(){
         if(INSTANCE == null){
             INSTANCE = new RedisHandler();
         }
@@ -51,7 +47,10 @@ public class RedisHandler {
      * @return Whether or not a game exists with the given UUID.
      */
     public boolean doesUUIDExist(String uuid){
-        return this.jedisPool.getResource().exists(this.getGameKeyFromUUID(uuid));
+        Jedis jedis = this.jedisPool.getResource();
+        boolean exists = jedis.exists(this.getGameKeyFromUUID(uuid));
+        jedis.close();
+        return exists;
     }
 
     /**
@@ -60,7 +59,7 @@ public class RedisHandler {
      */
     public String getNewUUID(){
         String uuid = UUID.randomUUID().toString();
-        while(!this.doesUUIDExist(uuid)){
+        while(this.doesUUIDExist(uuid)){
             uuid = UUID.randomUUID().toString();
         }
         return uuid;
@@ -79,15 +78,29 @@ public class RedisHandler {
         jedis.close();
         QuestionListProtos.QuestionListProto proto = null;
         try {
-            proto = QuestionListProtos.QuestionListProto
-                    .parseFrom(ByteString.copyFrom(value, "UTF-8"));
-        } catch (InvalidProtocolBufferException | UnsupportedEncodingException e) {
+            //https://stackoverflow.com/questions/28890646/protocol-buffer-parsefromstring-in-java-for-parsing-text-format
+            QuestionListProtos.QuestionListProto.Builder builder = QuestionListProtos.QuestionListProto.newBuilder();
+            builder.clear();
+            TextFormat.merge(value, builder);
+            proto = builder.build();
+        } catch (TextFormat.ParseException e) {
             e.printStackTrace();
         }
 
         assert proto != null;
 
         return QuestionList.fromProtoBuffer(this.getGameKeyFromUUID(uuid), proto);
+    }
+
+    /**
+     * Inserts the Protocol Buffer encoded List into the redis database.
+     * @param list THe Question List
+     */
+    public void insertNewQuestionList(QuestionList list){
+
+        Jedis jedis = this.jedisPool.getResource();
+        jedis.set(list.getQuestionListUUID(), list.toProtocolBuffer());
+        jedis.close();
     }
 
 }
