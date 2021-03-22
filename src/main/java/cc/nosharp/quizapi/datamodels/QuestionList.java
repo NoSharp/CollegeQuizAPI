@@ -48,7 +48,8 @@ public class QuestionList {
             protoBuilder.addQuestions(key, questionProto);
         }
         QuestionListProtos.QuestionListProto builtProto = protoBuilder.build();
-        return builtProto.toByteString().toStringUtf8();
+
+        return builtProto.toString();
     }
 
     public static QuestionList fromTDBAPI(String UUID,HashMap<Integer, TDBAPIResult> data){
