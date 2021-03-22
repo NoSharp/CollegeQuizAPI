@@ -15,6 +15,7 @@ public class QuestionListController {
     @ResponseBody
     public DeferredResult<QuestionOnlyList> getNewQuestionList(){
         DeferredResult<QuestionOnlyList> out = new DeferredResult<>();
+
         QuestionListMediator.getQuestionList().createNewQuesitonList(out::setResult);
 
         return out;
@@ -23,6 +24,8 @@ public class QuestionListController {
     @GetMapping("/api/v1/GetAnswer/{uuid}")
     @ResponseBody
     public AnswerList getAnswerList(@PathVariable("uuid") String uuid){
+        // Validate UUID minimum length.
+        if(uuid.length() < 22 && !RedisHandler.getRedisHandler().doesUUIDExist(uuid)) return null;
         QuestionList list = RedisHandler.getRedisHandler().getQuestionFromUUID(uuid);
 
         if(list == null) return null;
