@@ -2,7 +2,7 @@ package cc.nosharp.quizapi.opentdb;
 
 import lombok.Getter;
 
-public class TDAPIResult {
+public class TDBAPIResult {
 
     /**
      * The Category of the question
@@ -28,7 +28,7 @@ public class TDAPIResult {
     @Getter
     private final String correctAnswer;
 
-    public TDAPIResult(String category, String type, String question, String correctAnswer){
+    public TDBAPIResult(String category, String type, String question, String correctAnswer){
         this.category = category;
         this.type = type;
         this.question = question;

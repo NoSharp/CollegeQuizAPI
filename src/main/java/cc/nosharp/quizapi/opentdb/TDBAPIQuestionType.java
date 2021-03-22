@@ -2,7 +2,7 @@ package cc.nosharp.quizapi.opentdb;
 
 import lombok.Getter;
 
-public enum TDAPIQuestionType {
+public enum TDBAPIQuestionType {
 
     MULTIPLE("multiple"),
     TRUEFALSE("boolean");
@@ -10,7 +10,7 @@ public enum TDAPIQuestionType {
     @Getter
     private final String type;
 
-    TDAPIQuestionType(String type){
+    TDBAPIQuestionType(String type){
         this.type = type;
     }
 }

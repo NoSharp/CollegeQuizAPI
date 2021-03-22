@@ -2,7 +2,7 @@ package cc.nosharp.quizapi.opentdb;
 
 import lombok.Getter;
 
-public enum TDAPICategory {
+public enum TDBAPICategory {
 
 
 
@@ -12,7 +12,7 @@ public enum TDAPICategory {
     @Getter
     private final int id;
 
-    TDAPICategory(int id){
+    TDBAPICategory(int id){
         this.id = id;
     }
 }
