@@ -2,11 +2,8 @@ package cc.nosharp.quizapi.opentdb;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.concurrent.FutureCallback;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.apache.http.util.EntityUtils;
@@ -39,7 +36,7 @@ public class OpenTDBAPI {
                 if(entity == null){
                     return;
                 }
-                String jsonData = null;
+                String jsonData;
                 try {
                     jsonData = EntityUtils.toString(entity);
                     callback.callback(getResultsFromJSON(jsonData));
