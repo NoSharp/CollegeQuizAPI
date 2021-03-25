@@ -11,6 +11,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 public class QuestionListController {
 
     @Async
+    @CrossOrigin(origins = "*")
     @GetMapping("/api/v1/GetNewQuestionList")
     @ResponseBody
     public DeferredResult<QuestionOnlyList> getNewQuestionList(){
@@ -20,7 +21,7 @@ public class QuestionListController {
 
         return out;
     }
-
+    @CrossOrigin(origins = "*")
     @GetMapping("/api/v1/GetAnswer/{uuid}")
     @ResponseBody
     public AnswerList getAnswerList(@PathVariable("uuid") String uuid){
@@ -29,7 +30,7 @@ public class QuestionListController {
         QuestionList list = RedisHandler.getRedisHandler().getQuestionFromUUID(uuid);
 
         if(list == null) return null;
-
+        RedisHandler.getRedisHandler().deleteGameUUID(uuid);
         return AnswerList.fromQuestionList(list);
     }
 }
