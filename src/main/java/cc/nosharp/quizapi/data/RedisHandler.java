@@ -65,6 +65,11 @@ public class RedisHandler {
         return uuid;
     }
 
+    public void deleteGameUUID(String uuid){
+        Jedis jedis = this.jedisPool.getResource();
+        jedis.del(uuid);
+        jedis.close();
+    }
 
     /**
      * Get's a QuestionList from a Game UUID.
