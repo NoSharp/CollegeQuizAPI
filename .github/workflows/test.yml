@@ -38,7 +38,8 @@ jobs:
               ${{ runner.os }}-maven-
         - run: mvn -B package -DskipTests --file pom.xml
         - run: mkdir build && cp target/*.jar build
-        - uses: actions/upload-artifact@v1
+        - uses: softprops/action-gh-release@v1
           with:
-            name: Package
-            path: build
+            files: build/*.jar
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
