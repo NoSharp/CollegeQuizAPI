@@ -27,6 +27,13 @@ public class RedisHandler {
     }
 
     /**
+     * Used for testing, and testing only.
+     */
+    private RedisHandler(JedisPool pool){
+        this.jedisPool = pool;
+    }
+
+    /**
      * Get's an instance of the redis data source.
      * @return The instance of the RedisDataSource
      */
@@ -36,6 +43,19 @@ public class RedisHandler {
         }
         return INSTANCE;
     }
+
+
+    public static RedisHandler setupTestingHandler(JedisPool pool){
+        if(INSTANCE == null){
+            INSTANCE = new RedisHandler(pool);
+        }
+        return INSTANCE;
+    }
+
+    public static RedisHandler getTestingInstance(){
+        return INSTANCE;
+    }
+
 
     private String getGameKeyFromUUID(String uuid){
         return "GameKey." + uuid;
@@ -48,7 +68,7 @@ public class RedisHandler {
      */
     public boolean doesUUIDExist(String uuid){
         Jedis jedis = this.jedisPool.getResource();
-        boolean exists = jedis.exists(this.getGameKeyFromUUID(uuid));
+        boolean exists = jedis.exists(uuid);
         jedis.close();
         return exists;
     }
