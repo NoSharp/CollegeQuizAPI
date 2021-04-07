@@ -16,7 +16,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - run: mvn -B package --file pom.xml -DskipTest
+      - run: mvn -B package -DskipTests --file pom.xml
       - run: mkdir build && cp target/quizapi-0.0.1.jar build
       - uses: actions/upload-artifact@v1
         with:
