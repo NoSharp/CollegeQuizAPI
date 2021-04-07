@@ -38,9 +38,11 @@ jobs:
               ${{ runner.os }}-maven-
         - run: mvn -B package -DskipTests --file pom.xml
         - run: mkdir build && cp target/*.jar build
-        - uses: softprops/action-gh-release@v1
-          if: startsWith(github.ref, 'refs/tags/')
+        - uses: "marvinpinto/action-automatic-releases@latest"
           with:
-            files: build/*.jar
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            repo_token: "${{ secrets.GITHUB_TOKEN }}"
+            automatic_release_tag: "latest"
+            prerelease: true
+            title: "QuizAPI"
+            files: |
+              target/*.jar
