@@ -1,4 +1,4 @@
-# Credit to this article https://dev.to/ewefie/getting-started-with-github-actions-run-junit-5-tests-in-a-java-project-with-maven-20g4 for help with this.
+# Credit to this article https://medium.com/@alexander.volminger/ci-cd-for-java-maven-using-github-actions-d009a7cb4b8f
 name: build
 on: [push]
 jobs:
@@ -10,21 +10,15 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '11'
-      - uses: supercharge/redis-github-action@1.2.0
-        with:
-          redis-version: 6
       - uses: actions/cache@v2
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - run: mvn -B package --file pom.xml
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - run: mvn -B package --file pom.xml -DskipTest
+      - run: mkdir build && cp target/quizapi-0.0.1.jar build
+      - uses: actions/upload-artifact@v1
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "QuizAPI"
-          files: |
-            *.jar
+          name: Package
+          path: build
