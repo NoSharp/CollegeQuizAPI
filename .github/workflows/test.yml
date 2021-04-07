@@ -10,9 +10,9 @@ jobs:
           with:
             distribution: 'adopt'
             java-version: '11'
-          - uses: supercharge/redis-github-action@1.2.0
-            with:
-              redis-version: 6
+        - uses: supercharge/redis-github-action@1.2.0
+          with:
+            redis-version: 6
         - uses: actions/cache@v2
           with:
             path: ~/.m2/repository
