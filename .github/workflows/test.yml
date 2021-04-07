@@ -3,20 +3,42 @@ name: test
 on: [push]
 jobs:
   test:
-      runs-on: ubuntu-latest
-      steps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+      - uses: supercharge/redis-github-action@1.2.0
+        with:
+          redis-version: 6
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - run: mvn -B test --file pom.xml
+  build:
+    name: build
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
         - uses: actions/checkout@master
         - uses: actions/setup-java@v2
           with:
             distribution: 'adopt'
             java-version: '11'
-        - uses: supercharge/redis-github-action@1.2.0
-          with:
-            redis-version: 6
         - uses: actions/cache@v2
           with:
             path: ~/.m2/repository
             key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
             restore-keys: |
               ${{ runner.os }}-maven-
-        - run: mvn -B test --file pom.xml
+        - run: mvn -B package -DskipTests --file pom.xml
+        - run: mkdir build && cp target/*.jar build
+        - uses: actions/upload-artifact@v1
+          with:
+            name: Package
+            path: build
