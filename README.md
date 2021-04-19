@@ -6,8 +6,8 @@ This project uses:
 - Redis
 - Spring
 - JUnit5 (For Testing)
-- Jedis-Mock(For testing redis)
 - Spring Boot
 - Lombok
 - Protocol Buffers
 - JSON
+- Github Actions, To publish new releases and run automated testing upon commit
