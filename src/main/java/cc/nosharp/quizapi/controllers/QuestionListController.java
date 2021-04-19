@@ -21,16 +21,5 @@ public class QuestionListController {
 
         return out;
     }
-    @CrossOrigin(origins = "*")
-    @GetMapping("/api/v1/GetAnswer/{uuid}")
-    @ResponseBody
-    public AnswerList getAnswerList(@PathVariable("uuid") String uuid){
-        // Validate UUID minimum length.
-        if(uuid.length() < 22 && !RedisHandler.getRedisHandler().doesUUIDExist(uuid)) return null;
-        QuestionList list = RedisHandler.getRedisHandler().getQuestionFromUUID(uuid);
 
-        if(list == null) return null;
-        RedisHandler.getRedisHandler().deleteGameUUID(uuid);
-        return AnswerList.fromQuestionList(list);
-    }
 }
