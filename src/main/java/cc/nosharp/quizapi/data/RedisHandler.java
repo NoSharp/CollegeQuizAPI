@@ -57,7 +57,7 @@ public class RedisHandler {
     }
 
 
-    private String getGameKeyFromUUID(String uuid){
+    public String getGameKeyFromUUID(String uuid){
         return "GameKey." + uuid;
     }
 
