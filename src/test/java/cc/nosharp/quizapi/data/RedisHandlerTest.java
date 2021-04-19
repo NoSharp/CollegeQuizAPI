@@ -9,10 +9,7 @@ import net.jodah.concurrentunit.Waiter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 public class RedisHandlerTest {
 
@@ -55,5 +52,26 @@ public class RedisHandlerTest {
         Assertions.assertTrue(handler.doesUUIDExist(UUID));
         handler.deleteGameUUID(UUID);
         Assertions.assertFalse(handler.doesUUIDExist(UUID));
+    }
+
+    @Test
+    public void getsCorrectQuestionListFromUUID() throws Throwable {
+        RedisHandler handler = RedisHandler.getRedisHandler();
+        String UUID = handler.getNewUUID();
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        final Waiter waiter = new Waiter();
+        OpenTDBAPI.GetNewQuestions(10, TDBAPICategory.SCIENCE_COMPUTER, TDBAPIQuestionType.TRUEFALSE, callback ->{
+            QuestionList generatedQuestions = QuestionList.fromTDBAPI(UUID, callback);
+            handler.insertNewQuestionList(generatedQuestions);
+            waiter.resume();
+        });
+        waiter.await(15000);
+        Assertions.assertTrue(handler.doesUUIDExist(UUID));
+
+        QuestionList fromRedisQuestions = handler.getQuestionFromUUID(UUID);
+
+        Assertions.assertNotNull(fromRedisQuestions);
+        Assertions.assertEquals(fromRedisQuestions.getQuestions().size(), 10);
+        Assertions.assertEquals(fromRedisQuestions.getQuestionListUUID(), handler.getGameKeyFromUUID(UUID));
     }
 }
